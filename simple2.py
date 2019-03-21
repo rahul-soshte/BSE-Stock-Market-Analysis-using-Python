@@ -51,8 +51,8 @@ def Build_Data_Set():
 
     # data_df = data_df[:100]
     data_df = data_df.reindex(np.random.permutation(data_df.index))
-    data_df = data_df.replace("NaN",0).replace("N/A",0)
-    data_df=data_df.replace('inf',0)
+    # data_df = data_df.replace("NaN",0).replace("N/A",0)
+    # data_df=data_df.replace('inf',0)
     # data_df=data_df.dropna()
     
     data_df["Status2"] = list(map(Status_Calc, data_df["price_p_change"], data_df["sensex_p_change"]))
@@ -66,39 +66,28 @@ def Build_Data_Set():
 
     X = preprocessing.scale(X)
     
-    Z = np.array(data_df[["price_p_change","sensex_p_change"]])
-
-    return X,y,Z
+    return X,y
 
 def Analysis():
-    test_size = 10
+    test_size = 5
 
-    X, y , Z= Build_Data_Set()
-    print(len(X))
+    X, y = Build_Data_Set()
 
     clf = svm.SVC(kernel="linear", C= 1.0)
     clf.fit(X[:],y[:])
-            
-    data_df = pd.read_csv("forward.csv")
 
-    # data_df = data_df.replace("N/A",0).replace("NaN",0)
+    data_df = pd.read_csv('forward.csv')
 
     X = np.array(data_df[features].values)
-
     X = preprocessing.scale(X)
-
-    Z = data_df["Code"].values.tolist()
+    Z = data_df['Code'].values.tolist()
 
     invest_list = []
-
     for i in range(len(X)):
         p = clf.predict(X[i].reshape(1,-1))[0]
         if p == 1:
-            # print(Z[i])
             invest_list.append(Z[i])
 
-    #print(len(invest_list))
-    #print(invest_list)
     return invest_list
 
 final_list = []
@@ -112,12 +101,24 @@ for x in range(loops):
 
 x = Counter(final_list)
 
-print(15*"_")
-final_final_list=list()
+final_final_list = list()
+
 for each in x:
     if x[each] > loops - (loops/3):
         print(each)
-        final_final_list.append(each)
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
